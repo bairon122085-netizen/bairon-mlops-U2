@@ -42,10 +42,15 @@ def predecir_estado(edad: float, fiebre: float, dolor: float, dias_sintomas: flo
     if fiebre < 37.5 and dolor <= 2 and dias_sintomas <= 2:
         return "NO ENFERMO"
 
+    if edad >= 85 and  dias_sintomas >= 15:
+        return "ENFERMEDAD TERMINAL"
+
     if dias_sintomas >= 30 or (edad >= 65 and dias_sintomas >= 15 and dolor >= 5):
         return "ENFERMEDAD CRÓNICA"
 
     if fiebre >= 39 or dolor >= 8 or (fiebre >= 38.5 and dias_sintomas >= 5):
         return "ENFERMEDAD AGUDA"
 
+
+    
     return "ENFERMEDAD LEVE"
