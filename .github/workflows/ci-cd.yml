@@ -44,7 +44,7 @@ jobs:
             })
 
       - name: Ejecutar pruebas
-        run: pytest
+        run: PYTHONPATH=. pytest
 
       - name: Comentar éxito en PR
         if: github.event_name == 'pull_request'
