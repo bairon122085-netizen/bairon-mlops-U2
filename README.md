@@ -1,172 +1,199 @@
-# Servicio Docker para predicción de estado de enfermedad
+# Proyecto MLOps Unidad 2
 
-## 1. Objetivo de la solución
+## Descripción General
 
-Este proyecto implementa una solución local usando Docker para simular un servicio de predicción médica. El servicio permite que un médico ingrese datos básicos de un paciente y reciba como respuesta uno de los siguientes estados:
+Este proyecto corresponde a una solución académica de MLOps orientada a la predicción simulada de enfermedades en pacientes utilizando variables clínicas básicas.
+
+La solución fue desarrollada utilizando Python, Flask, Docker y GitHub Actions, implementando buenas prácticas de:
+
+- Control de versiones
+- Desarrollo basado en ramas
+- Pull Requests
+- Integración continua (CI)
+- Despliegue continuo (CD)
+- Dockerización
+- Automatización mediante GitHub Actions
+
+---
+
+# Objetivo del Proyecto
+
+Construir un flujo básico de MLOps que permita:
+
+- Gestionar el ciclo de vida del modelo mediante GitHub.
+- Versionar cambios utilizando ramas y Pull Requests.
+- Automatizar validaciones y pruebas unitarias.
+- Construir y publicar imágenes Docker automáticamente.
+- Simular un entorno empresarial de integración y despliegue continuo.
+
+---
+
+# Categorías de Predicción
+
+El modelo simulado puede retornar las siguientes categorías:
 
 - NO ENFERMO
 - ENFERMEDAD LEVE
 - ENFERMEDAD AGUDA
 - ENFERMEDAD CRÓNICA
-
-El objetivo académico es demostrar cómo empaquetar una solución de machine learning o una función predictiva simulada dentro de una imagen personalizada de Docker.
-
-> Nota: La función incluida no corresponde a un modelo médico real. Es una simulación académica basada en reglas simples.
+- ENFERMEDAD TERMINAL
 
 ---
 
-## 2. Estructura del proyecto
+# Funcionalidades Implementadas
+
+## Predicción de enfermedades
+
+La aplicación permite realizar predicciones a partir de:
+
+- Edad
+- Temperatura corporal
+- Nivel de dolor
+- Días con síntomas
+
+---
+
+## Estadísticas de predicciones
+
+La solución incorpora un sistema básico de monitoreo y trazabilidad mediante:
+
+- Número total de predicciones por categoría
+- Últimas 5 predicciones realizadas
+- Fecha de la última predicción
+
+La información se almacena en:
 
 ```text
-mlops_enfermedades_docker/
-├── app/
-│   ├── app.py
-│   ├── modelo.py
-│   └── templates/
-│       └── index.html
-├── docs/
-│   └── pipeline_mlops.md
-├── Dockerfile
-├── requirements.txt
-└── README.md
+stats.json
 ```
 
 ---
 
-## 3. Variables de entrada
+# Endpoints Disponibles
 
-El servicio recibe cuatro valores:
-
-| Variable | Descripción | Ejemplo |
-|---|---|---|
-| edad | Edad del paciente | 35 |
-| fiebre | Temperatura corporal en grados Celsius | 38.2 |
-| dolor | Nivel de dolor entre 0 y 10 | 4 |
-| dias_sintomas | Número de días con síntomas | 3 |
-
-Aunque la tarea pedía al menos tres valores de entrada, se usan cuatro para que la simulación sea más clara.
-
----
-
-## 4. Construir la imagen Docker
-
-Desde la carpeta raíz del proyecto, ejecutar:
-
-```bash
-docker build -t predictor-enfermedades:1.0 .
-```
-
----
-
-## 5. Correr el contenedor
-
-```bash
-docker run -p 5000:5000 predictor-enfermedades:1.0
-```
-
-Después de ejecutar el comando, abrir en el navegador:
+## Página principal
 
 ```text
-http://localhost:5000
+GET /
 ```
 
 ---
 
-## 6. Uso mediante página web
+## Predicción
 
-1. Abrir `http://localhost:5000`.
-2. Ingresar edad, fiebre, nivel de dolor y días con síntomas.
-3. Presionar el botón **Predecir estado**.
-4. La aplicación mostrará uno de los cuatro estados definidos.
-
----
-
-## 7. Uso mediante API REST
-
-También se puede consumir el servicio con `curl`:
-
-```bash
-curl -X POST http://localhost:5000/predecir \
-  -H "Content-Type: application/json" \
-  -d '{"edad": 35, "fiebre": 38.2, "dolor": 4, "dias_sintomas": 3}'
+```text
+POST /predecir
 ```
 
-Respuesta esperada:
+Ejemplo:
 
 ```json
 {
-  "estado_predicho": "ENFERMEDAD LEVE",
-  "entradas": {
-    "edad": 35.0,
-    "fiebre": 38.2,
-    "dolor": 4.0,
-    "dias_sintomas": 3.0
-  }
+  "edad": 90,
+  "fiebre": 39,
+  "dolor": 8,
+  "dias_sintomas": 20
 }
 ```
 
 ---
 
-## 8. Ejemplos para obtener todas las clases
+## Estadísticas
 
-### NO ENFERMO
-
-```bash
-curl -X POST http://localhost:5000/predecir \
-  -H "Content-Type: application/json" \
-  -d '{"edad": 25, "fiebre": 36.8, "dolor": 1, "dias_sintomas": 1}'
-```
-
-### ENFERMEDAD LEVE
-
-```bash
-curl -X POST http://localhost:5000/predecir \
-  -H "Content-Type: application/json" \
-  -d '{"edad": 35, "fiebre": 38.0, "dolor": 4, "dias_sintomas": 3}'
-```
-
-### ENFERMEDAD AGUDA
-
-```bash
-curl -X POST http://localhost:5000/predecir \
-  -H "Content-Type: application/json" \
-  -d '{"edad": 45, "fiebre": 39.5, "dolor": 8, "dias_sintomas": 4}'
-```
-
-### ENFERMEDAD CRÓNICA
-
-```bash
-curl -X POST http://localhost:5000/predecir \
-  -H "Content-Type: application/json" \
-  -d '{"edad": 70, "fiebre": 37.8, "dolor": 6, "dias_sintomas": 40}'
+```text
+GET /estadisticas
 ```
 
 ---
 
-## 9. Verificación del estado del servicio
+## Health Check
 
-```bash
-curl http://localhost:5000/health
-```
-
-Respuesta esperada:
-
-```json
-{"status": "ok"}
+```text
+GET /health
 ```
 
 ---
 
-## 10. Detener el contenedor
+# Estructura del Proyecto
 
-Listar contenedores activos:
-
-```bash
-docker ps
+```text
+.
+├── app/
+│   ├── app.py
+│   ├── modelo.py
+│   └── templates/
+│       └── index.html
+│
+├── tests/
+│   └── test_modelo.py
+│
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml
+│
+├── Dockerfile
+├── requirements.txt
+├── stats.json
+├── modelo.py
+└── README.md
 ```
 
-Detener el contenedor:
+---
+
+# Pipeline CI/CD
+
+El proyecto implementa un pipeline automatizado mediante GitHub Actions que:
+
+- Ejecuta pruebas unitarias automáticamente.
+- Valida Pull Requests hacia `main`.
+- Construye imágenes Docker automáticamente.
+- Publica imágenes Docker en GitHub Container Registry (GHCR).
+
+Eventos automatizados:
+
+- `pull_request`
+- `push`
+
+---
+
+# Docker
+
+## Construcción de imagen
 
 ```bash
-docker stop <container_id>
+docker build -t bairon-mlops-u2 .
 ```
+
+## Ejecución del contenedor
+
+```bash
+docker run -p 5000:5000 bairon-mlops-u2
+```
+
+---
+
+# Registro Docker Publicado
+
+Imagen disponible en:
+
+```text
+ghcr.io/bairon122085-netizen/bairon-mlops-u2:latest
+```
+
+---
+
+# Tecnologías Utilizadas
+
+- Python
+- Flask
+- Docker
+- GitHub
+- GitHub Actions
+- Pytest
+
+---
+
+# Autor
+
+Bairon Gutierrez
+````
