@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de Estado de Enfermedad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 720px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+        h1 { color: #12355b; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 18px;
+            background: #1f77b4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .resultado {
+            margin-top: 25px;
+            padding: 18px;
+            background: #e8f5e9;
+            border-left: 6px solid #2e7d32;
+            border-radius: 8px;
+        }
+        .error {
+            margin-top: 25px;
+            padding: 18px;
+            background: #ffebee;
+            border-left: 6px solid #c62828;
+            border-radius: 8px;
+        }
+        code { background: #eef; padding: 2px 5px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Servicio de Predicción Clínica</h1>
+    <p>
+        Esta aplicación simula un modelo de clasificación médica para predecir
+        el estado de un paciente a partir de síntomas básicos.
+    </p>
+
+    <form method="POST" action="/predecir">
+        <label>Edad del paciente</label>
+        <input type="number" name="edad" step="1" min="0" required value="{{ edad or '' }}">
+
+        <label>Temperatura / fiebre en °C</label>
+        <input type="number" name="fiebre" step="0.1" min="30" max="45" required value="{{ fiebre or '' }}">
+
+        <label>Dolor escala 0 a 10</label>
+        <input type="number" name="dolor" step="1" min="0" max="10" required value="{{ dolor or '' }}">
+
+        <label>Días con síntomas</label>
+        <input type="number" name="dias_sintomas" step="1" min="0" required value="{{ dias_sintomas or '' }}">
+
+        <button type="submit">Predecir estado</button>
+    </form>
+
+    {% if resultado %}
+    <div class="resultado">
+        <strong>Resultado:</strong> {{ resultado }}
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <h3>Endpoint API</h3>
+    <p>También se puede consumir mediante <code>POST /predecir</code> enviando un JSON.</p>
+</div>
+</body>
+</html>
