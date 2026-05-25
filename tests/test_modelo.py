@@ -1,4 +1,4 @@
-from app.modelo import predecir_estado
+from modelo import predecir_estado
 
 
 def test_no_enfermo():
